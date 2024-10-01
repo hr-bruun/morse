@@ -99,10 +99,10 @@ class DebugTransmitter(Transmitter):
         print(msg, end=' ', flush=True)
 
 
-# class RpiTransmitter(Transmitter):
-#     """A Raspberry Pi transmitter."""
+class RpiTransmitter(Transmitter):  # pylint: disable=too-few-public-methods
+    """A Raspberry Pi transmitter."""
 
-#     GPIO_PIN = 4
+    GPIO_PIN = 4
 
 #     def __init__(self, timer):
 #         from RPi import GPIO  # pylint: disable=import-outside-toplevel
