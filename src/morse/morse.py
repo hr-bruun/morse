@@ -5,13 +5,13 @@ import time
 
 from .alphabet import ALPHABET
 
-class Morse:  # [too-few-public-methods]
+class Morse:  # pylint: disable=too-few-public-methods
     """Class represending a morse code sender"""
 
-    def __init__(self, transmitter):  # [missing-function-docstring]
+    def __init__(self, transmitter):
         self.transmitter = transmitter
 
-    def send_message(self, message):  # [missing-function-docstring]
+    def send_message(self, message):  # pylint: disable=missing-function-docstring
         for letter in message.lower():
             self._send_letter(letter)
         self._send_letter(" ")
