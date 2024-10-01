@@ -12,7 +12,7 @@ import argparse
 from .morse import Morse, DebugTransmitter, ParisTimer, RpiTransmitter
 
 
-def main():  # [missing-function-docstring]
+def main():  # pylint: disable=missing-function-docstring
     parser = argparse.ArgumentParser(description='Morse sender application')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-m', help='the message to send')

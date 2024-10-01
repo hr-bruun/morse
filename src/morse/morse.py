@@ -31,26 +31,26 @@ class ParisTimer:
 
     INTER_WORD_PAUSE = 7
 
-    def __init__(self, wpm):  # [missing-function-docstring]
+    def __init__(self, wpm):
         self.dit_length = ParisTimer.calculate_dit_length(wpm)
 
-    def end_of_word(self):  # [missing-function-docstring]
+    def end_of_word(self):  # pylint: disable=missing-function-docstring
         self._pause(self.INTER_WORD_PAUSE)
 
-    def end_of_character(self):  # [missing-function-docstring]
+    def end_of_character(self):  # pylint: disable=missing-function-docstring
         self._pause(2) # Makes 3 in all for inter-character space
 
-    def end_of_dot_or_dash(self):  # [missing-function-docstring]
+    def end_of_dot_or_dash(self):  # pylint: disable=missing-function-docstring
         self._pause(1) # intra-character space
 
-    def dot_or_dash(self, dot_or_dash):  # [missing-function-docstring]
+    def dot_or_dash(self, dot_or_dash):  # pylint: disable=missing-function-docstring
         self._pause(1 if dot_or_dash == 0 else 3)
 
-    def _pause(self, units):  # [missing-function-docstring]
+    def _pause(self, units):
         time.sleep(units * self.dit_length)
 
     @staticmethod
-    def calculate_dit_length(wpm):  # [missing-function-docstring]
+    def calculate_dit_length(wpm):  # pylint: disable=missing-function-docstring
         # Using the "PARIS" standard word (50 units long)
         return 60 / (50 * wpm)
 
@@ -75,10 +75,10 @@ class Transmitter(ABC):
 class DebugTransmitter(Transmitter):
     """A debug transmitter."""
 
-    def __init__(self, timer):  # [missing-function-docstring]
+    def __init__(self, timer):
         self.timer = timer
 
-    def transmit(self, signal: int) -> None:  # [missing-function-docstring]
+    def transmit(self, signal: int) -> None:  # pylint: disable=missing-function-docstring
         if signal == 0:
             self._debug("dot")
         else:
@@ -86,16 +86,16 @@ class DebugTransmitter(Transmitter):
         self.timer.dot_or_dash(signal)
         self.timer.end_of_dot_or_dash()
 
-    def end_of_character(self) -> None:  # [missing-function-docstring]
+    def end_of_character(self) -> None:  # pylint: disable=missing-function-docstring
         self._debug("/") # end of character /
         self.timer.end_of_character()
 
-    def end_of_word(self) -> None:  # [missing-function-docstring]
+    def end_of_word(self) -> None:  # pylint: disable=missing-function-docstring
         self._debug("/") # extra / to finish word
         print(" - inter word pause - ")
         self.timer.end_of_word()
 
-    def _debug(self, msg):  # [missing-function-docstring]
+    def _debug(self, msg):
         print(msg, end=' ', flush=True)
 
 
