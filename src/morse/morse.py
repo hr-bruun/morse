@@ -5,13 +5,13 @@ import time
 
 from .alphabet import ALPHABET
 
-class Morse:
+class Morse:  # [too-few-public-methods]
     """Class represending a morse code sender"""
 
     def __init__(self, transmitter):  # [missing-function-docstring]
         self.transmitter = transmitter
 
-    def send_message(self, message):
+    def send_message(self, message):  # [missing-function-docstring]
         for letter in message.lower():
             self._send_letter(letter)
         self._send_letter(" ")
@@ -32,7 +32,7 @@ class ParisTimer:
     INTER_WORD_PAUSE = 7
 
     def __init__(self, wpm):  # [missing-function-docstring]
-        self.dit_length = ParisTimer.dit_length(wpm)
+        self.dit_length = ParisTimer.calculate_dit_length(wpm)
 
     def end_of_word(self):  # [missing-function-docstring]
         self._pause(self.INTER_WORD_PAUSE)
@@ -50,7 +50,7 @@ class ParisTimer:
         time.sleep(units * self.dit_length)
 
     @staticmethod
-    def dit_length(wpm):  # [missing-function-docstring]
+    def calculate_dit_length(wpm):  # [missing-function-docstring]
         # Using the "PARIS" standard word (50 units long)
         return 60 / (50 * wpm)
 
@@ -105,7 +105,7 @@ class RpiTransmitter(Transmitter):
     GPIO_PIN = 4
 
     def __init__(self, timer):  # [missing-function-docstring]
-        import RPi.GPIO as GPIO
+        from RPi import GPIO
         self.timer = timer
 
         GPIO.setmode(GPIO.BCM)
