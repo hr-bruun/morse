@@ -104,26 +104,27 @@ class RpiTransmitter(Transmitter):  # pylint: disable=too-few-public-methods
 
     GPIO_PIN = 4
 
-#     def __init__(self, timer):
+    def __init__(self, timer):
 #         from RPi import GPIO  # pylint: disable=import-outside-toplevel
-#         self.timer = timer
+        self.timer = timer
 
 #         GPIO.setmode(GPIO.BCM)
 #         GPIO.setup(self.GPIO_PIN, GPIO.OUT)
 #         GPIO.output(self.GPIO_PIN, GPIO.LOW)
 
-#     def cleanup_gpio(self):  # pylint: disable=missing-function-docstring
+    def cleanup_gpio(self):  # pylint: disable=missing-function-docstring
 #         GPIO.output(self.GPIO_PIN, GPIO.LOW)
 #         GPIO.cleanup()
+        pass
 
-#     def transmit(self, signal: int) -> None:  # pylint: disable=missing-function-docstring
+    def transmit(self, signal: int) -> None:  # pylint: disable=missing-function-docstring
 #         GPIO.output(GPIO_PIN, GPIO.HIGH)
-#         self.timer.dot_or_dash(signal)
+        self.timer.dot_or_dash(signal)
 #         GPIO.output(GPIO_PIN, GPIO.LOW)
-#         self.timer.end_of_dot_or_dash()
+        self.timer.end_of_dot_or_dash()
 
-#     def end_of_character(self) -> None:  # pylint: disable=missing-function-docstring
-#         self.timer.end_of_character()
+    def end_of_character(self) -> None:  # pylint: disable=missing-function-docstring
+        self.timer.end_of_character()
 
-#     def end_of_word(self) -> None:  # pylint: disable=missing-function-docstring
-#         self.timer.end_of_word()
+    def end_of_word(self) -> None:  # pylint: disable=missing-function-docstring
+        self.timer.end_of_word()
