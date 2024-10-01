@@ -1,12 +1,14 @@
+"""Module providing classes for timing and transmitting morse code."""
+
 from abc import ABC, abstractmethod
 import time
-from typing import List
 
 from .alphabet import ALPHABET
 
 class Morse:
-    
-    def __init__(self, transmitter):
+    """Class represending a morse code sender"""
+
+    def __init__(self, transmitter):  # [missing-function-docstring]
         self.transmitter = transmitter
 
     def send_message(self, message):
@@ -20,39 +22,43 @@ class Morse:
         else:
             for dot_or_dash in ALPHABET[letter]:
                 self.transmitter.transmit(dot_or_dash)
-                    
+
             self.transmitter.end_of_character()
 
 
 class ParisTimer:
+    """A morse code timer using Paris timing."""
+
     INTER_WORD_PAUSE = 7
 
-    def __init__(self, wpm):
+    def __init__(self, wpm):  # [missing-function-docstring]
         self.dit_length = ParisTimer.dit_length(wpm)
 
-    def end_of_word(self):
-        self._pause(self.INTER_WORD_PAUSE) 
+    def end_of_word(self):  # [missing-function-docstring]
+        self._pause(self.INTER_WORD_PAUSE)
 
-    def end_of_character(self):
+    def end_of_character(self):  # [missing-function-docstring]
         self._pause(2) # Makes 3 in all for inter-character space
 
-    def end_of_dot_or_dash(self):
+    def end_of_dot_or_dash(self):  # [missing-function-docstring]
         self._pause(1) # intra-character space
 
-    def dot_or_dash(self, dot_or_dash):
+    def dot_or_dash(self, dot_or_dash):  # [missing-function-docstring]
         self._pause(1 if dot_or_dash == 0 else 3)
 
-    def _pause(self, units):
+    def _pause(self, units):  # [missing-function-docstring]
         time.sleep(units * self.dit_length)
 
     @staticmethod
-    def dit_length(wpm):
-        # Using the "PARIS" standard word (50 units long) 
+    def dit_length(wpm):  # [missing-function-docstring]
+        # Using the "PARIS" standard word (50 units long)
         return 60 / (50 * wpm)
 
 
 class Transmitter(ABC):
-    
+    """An abstract transmitter class."""
+
+
     @abstractmethod
     def transmit(self, signal: int) -> None:
         pass
@@ -60,17 +66,19 @@ class Transmitter(ABC):
     @abstractmethod
     def end_of_character(self) -> None:
         pass
-    
+
     @abstractmethod
     def end_of_word(self) -> None:
         pass
 
 
 class DebugTransmitter(Transmitter):
-    def __init__(self, timer):
+    """A debug transmitter."""
+
+    def __init__(self, timer):  # [missing-function-docstring]
         self.timer = timer
 
-    def transmit(self, signal: int) -> None:
+    def transmit(self, signal: int) -> None:  # [missing-function-docstring]
         if signal == 0:
             self._debug("dot")
         else:
@@ -78,23 +86,25 @@ class DebugTransmitter(Transmitter):
         self.timer.dot_or_dash(signal)
         self.timer.end_of_dot_or_dash()
 
-    def end_of_character(self) -> None:
+    def end_of_character(self) -> None:  # [missing-function-docstring]
         self._debug("/") # end of character /
         self.timer.end_of_character()
 
-    def end_of_word(self) -> None:
+    def end_of_word(self) -> None:  # [missing-function-docstring]
         self._debug("/") # extra / to finish word
         print(" - inter word pause - ")
         self.timer.end_of_word()
 
-    def _debug(self, msg):
+    def _debug(self, msg):  # [missing-function-docstring]
         print(msg, end=' ', flush=True)
 
 
 class RpiTransmitter(Transmitter):
+    """A Raspberry Pi transmitter."""
+
     GPIO_PIN = 4
-    
-    def __init__(self, timer):
+
+    def __init__(self, timer):  # [missing-function-docstring]
         import RPi.GPIO as GPIO
         self.timer = timer
 
@@ -102,18 +112,18 @@ class RpiTransmitter(Transmitter):
         GPIO.setup(self.GPIO_PIN, GPIO.OUT)
         GPIO.output(self.GPIO_PIN, GPIO.LOW)
 
-    def cleanup_gpio(self):
+    def cleanup_gpio(self):  # [missing-function-docstring]
         GPIO.output(self.GPIO_PIN, GPIO.LOW)
         GPIO.cleanup()
 
-    def transmit(self, signal: int) -> None:
+    def transmit(self, signal: int) -> None:  # [missing-function-docstring]
         GPIO.output(GPIO_PIN, GPIO.HIGH)
         self.timer.dot_or_dash(signal)
         GPIO.output(GPIO_PIN, GPIO.LOW)
         self.timer.end_of_dot_or_dash()
 
-    def end_of_character(self) -> None:
+    def end_of_character(self) -> None:  # [missing-function-docstring]
         self.timer.end_of_character()
 
-    def end_of_word(self) -> None:
+    def end_of_word(self) -> None:  # [missing-function-docstring]
         self.timer.end_of_word()

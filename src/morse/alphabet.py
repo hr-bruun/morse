@@ -1,3 +1,5 @@
+"""Module providing conversion from alphabet to morse code."""
+
 ALPHABET = {
     "a": [ 0, 1 ],
     "b": [ 1, 0, 0, 0 ],

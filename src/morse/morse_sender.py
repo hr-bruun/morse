@@ -5,14 +5,14 @@ The LED is expected to be connected to GPIO 4 (BCM naming)
 
 The message to send is specified with the -m parameter
 
-'''
+    '''
 
 import argparse
 
 from .morse import Morse, DebugTransmitter, ParisTimer, RpiTransmitter
 
 
-def main():
+def main():  # [missing-function-docstring]
     parser = argparse.ArgumentParser(description='Morse sender application')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-m', help='the message to send')
@@ -24,6 +24,7 @@ def main():
 
     args = parser.parse_args()
 
+    message = "paris"
     if args.file:
         message = args.file.read().replace('\n', '')
 
