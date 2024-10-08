@@ -3,7 +3,7 @@ name: Tryout
 on: [push]
 
 jobs:
-  build:
+  tryout:
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
@@ -11,4 +11,4 @@ jobs:
 
     - name: Getting sha256sum
       run: |
-        sha256sum LICENSE
+        echo "value=$(sha256sum LICENSE | cut -d ' ' -f1)" >> "$GITHUB_OUTPUT"
