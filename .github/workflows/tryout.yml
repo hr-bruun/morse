@@ -9,6 +9,11 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Getting sha256sum
+    - name: Calculating and setting sha256sum
+      id: sha256sum
       run: |
         echo "value=$(sha256sum LICENSE | cut -d ' ' -f1)" >> "$GITHUB_OUTPUT"
+
+    - name: Getting sha256sum
+      run: |
+        echo "Got sha256sum: ${{steps.sha256sum.outputs.value}}"
