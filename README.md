@@ -1,1 +1,2 @@
-# morse
+# morse-sender project
+
