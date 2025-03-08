@@ -8,6 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+RPi.GPIO = "*"
 
 [tool.poetry.dev-dependencies]
 
