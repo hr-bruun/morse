@@ -1,16 +1,13 @@
 """Module providing morse code functionality."""
 
 import argparse
-from abc import ABC, abstractmethod
-import time
-from typing import List
 
 from .alphabet import ALPHABET
 from .timer import Timer, ParisTimer
 from .transmitters import Transmitter, DebugTransmitter, RpiTransmitter
 
 
-class Morse:
+class Morse: # pylint: disable=too-few-public-methods
     """Class representing a morse code sender"""
 
     def __init__(self, transmitter: Transmitter):

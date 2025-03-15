@@ -7,19 +7,15 @@ class Timer:
 
     def end_of_word(self) -> None:
         """Pause at the end of a word."""
-        pass
 
     def end_of_character(self) -> None:
         """Pause at the end of a character."""
-        pass
 
     def end_of_dot_or_dash(self) -> None:
         """Pause at the end of a dot or dash."""
-        pass
 
     def dot_or_dash(self, dot_or_dash: int) -> None:
         """Transmit a dot or dash."""
-        pass
 
     def dit_length(self) -> float:
         """Return the length of a dit."""
