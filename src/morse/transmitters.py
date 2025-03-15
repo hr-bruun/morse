@@ -60,23 +60,23 @@ class RpiTransmitter(Transmitter):
     def __init__(self, timer: ParisTimer):
         # import gpio here to avoid import errors on non-rpi platforms
         # pylint: disable=import-outside-toplevel
-        from RPi import GPIO  # type: ignore
-        self.GPIO = GPIO
+        from RPi import GPIO
+        self.gpio = GPIO
         self.timer = timer
-        self.GPIO.setmode(self.GPIO.BCM)
-        self.GPIO.setup(4, self.GPIO.OUT)
-        self.GPIO.output(4, self.GPIO.LOW)
+        self.gpio.setmode(self.gpio.BCM)
+        self.gpio.setup(4, self.gpio.OUT)
+        self.gpio.output(4, self.gpio.LOW)
 
     def __del__(self):
-        self.GPIO.output(4, self.GPIO.LOW)
-        self.GPIO.cleanup()
-        self.GPIO.cleanup()
+        self.gpio.output(4, self.gpio.LOW)
+        self.gpio.cleanup()
+        self.gpio.cleanup()
 
     def transmit(self, dot_or_dash: int) -> None:
-        self.GPIO.output(4, self.GPIO.HIGH)
+        self.gpio.output(4, self.gpio.HIGH)
         self.timer.dot_or_dash(dot_or_dash)
-        self.GPIO.output(4, self.GPIO.LOW)
-        self.GPIO.output(4, self.GPIO.LOW)
+        self.gpio.output(4, self.gpio.LOW)
+        self.gpio.output(4, self.gpio.LOW)
 
     def end_of_character(self) -> None:
         """Handle end of character."""
