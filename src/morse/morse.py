@@ -1,31 +1,16 @@
-"""Module providing classes for timing and transmitting morse code."""
+"""Module providing morse code functionality."""
 
+import argparse
 from abc import ABC, abstractmethod
 import time
 from typing import List
 
 from .alphabet import ALPHABET
-
-class Transmitter(ABC):
-    """An abstract transmitter class."""
-
-    @abstractmethod
-    def transmit(self, dot_or_dash: int) -> None:
-        """Transmit a dot or dash."""
-        pass
-
-    @abstractmethod
-    def end_of_word(self) -> None:
-        """Handle end of word."""
-        pass
-
-    @abstractmethod
-    def end_of_character(self) -> None:
-        """Handle end of character."""
-        pass
+from .timer import Timer, ParisTimer
+from .transmitters import Transmitter, DebugTransmitter, RpiTransmitter
 
 
-class Morse:  # pylint: disable=too-few-public-methods
+class Morse:
     """Class representing a morse code sender"""
 
     def __init__(self, transmitter: Transmitter):
@@ -46,92 +31,48 @@ class Morse:  # pylint: disable=too-few-public-methods
                 self.transmitter.transmit(dot_or_dash)
             self.transmitter.end_of_character()
 
-class ParisTimer:
-    """A morse code timer using Paris timing."""
 
-    INTER_WORD_PAUSE = 7
+def main():
+    """
+    Entry point for the Morse sender application.
+    This function parses command-line arguments to determine the message to send,
+    the speed of the message in words per minute, and whether to send the message
+    to hardware or use a debug transmitter. It then sends the message using the
+    specified parameters.
+    """
+    parser = argparse.ArgumentParser(description='Morse sender application')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('-m', help='the message to send')
+    group.add_argument('-f', '--file', type=argparse.FileType('r'),
+                       help='a file with the message to send')
+    parser.add_argument('--wpm', nargs='?', const=2, type=int, default=2,
+                        help='the speed of the message in words per minute (default is 1)')
+    parser.add_argument('--hw', action='store_true')
 
-    def __init__(self, wpm: int):
-        self.dit_length = ParisTimer.calculate_dit_length(wpm)
+    args = parser.parse_args()
 
-    def end_of_word(self) -> None:
-        """Pause at the end of a word."""
-        self._pause(self.INTER_WORD_PAUSE)
+    message = "paris"
+    if args.file:
+        message = args.file.read().replace('\n', '')
 
-    def end_of_character(self) -> None:
-        """Pause at the end of a character."""
-        self._pause(2)  # Makes 3 in all for inter-character space
+    if args.m:
+        message = args.m
 
-    def end_of_dot_or_dash(self) -> None:
-        """Pause at the end of a dot or dash."""
-        self._pause(1)  # intra-character space
+    if args.hw:
+        timer = ParisTimer(args.wpm)
+        transmitter = RpiTransmitter(timer)
+    else:
+        timer = Timer()
+        transmitter = DebugTransmitter(timer)
+    morse = Morse(transmitter)
 
-    def dot_or_dash(self, dot_or_dash: int) -> None:
-        """Transmit a dot or dash."""
-        self._pause(1 if dot_or_dash == 0 else 3)
+    print(f'Sending message: {message}')
+    print(f'Words per minute: {args.wpm}')
+    print(f'Dit speed in seconds: {timer.dit_length()}')
+    print(f'Sending to hardware: {args.hw}')
 
-    def _pause(self, units: int) -> None:
-        """Pause for a given number of units."""
-        time.sleep(units * self.dit_length)
-
-    @staticmethod
-    def calculate_dit_length(wpm: int) -> float:
-        """Calculate the length of a dit based on words per minute."""
-        # Using the "PARIS" standard word (50 units long)
-        return 60 / (50 * wpm)
-
-
-class DebugTransmitter(Transmitter):
-    """A debug transmitter."""
-
-    def __init__(self, timer: ParisTimer):
-        self.timer = timer
-
-    def transmit(self, dot_or_dash: int) -> None:
-        """Transmit a dot or dash."""
-        print("." if dot_or_dash == 0 else "-", end="")
-        self.timer.dot_or_dash(dot_or_dash)
-        self.timer.end_of_dot_or_dash()
-
-    def end_of_character(self) -> None:
-        """Handle end of character."""
-        print("/", end=" ")
-        self.timer.end_of_character()
-
-    def end_of_word(self) -> None:
-        """Handle end of word."""
-        print("/", end=" ")
-        self.timer.end_of_word()
+    morse.send_message(message)
 
 
-class RpiTransmitter(Transmitter):
-    """A Raspberry Pi transmitter."""
-
-    def __init__(self, timer: ParisTimer):
-        # import gpio here to avoid import errors on non-rpi platforms
-        # pylint: disable=import-outside-toplevel
-        import RPi.GPIO as GPIO  # Import the RPi.GPIO module
-        self.GPIO = GPIO
-        self.timer = timer
-        self.GPIO.setmode(self.GPIO.BCM) 
-        self.GPIO.setup(4, self.GPIO.OUT)
-        self.GPIO.output(4, self.GPIO.LOW)
-
-    def __del__(self):
-        self.GPIO.output(4, self.GPIO.LOW)
-        self.GPIO.cleanup()
-        self.GPIO.cleanup()
-
-    def transmit(self, dot_or_dash: int) -> None:
-        self.GPIO.output(4, self.GPIO.HIGH)
-        self.timer.dot_or_dash(dot_or_dash)
-        self.GPIO.output(4, self.GPIO.LOW)
-        self.GPIO.output(4, self.GPIO.LOW)
-
-    def end_of_character(self) -> None:
-        """Handle end of character."""
-        self.timer.end_of_character()
-
-    def end_of_word(self) -> None:
-        """Handle end of word."""
-        self.timer.end_of_word()
+if __name__ == "__main__":
+    main()
