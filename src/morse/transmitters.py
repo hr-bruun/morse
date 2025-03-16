@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 
-from .timer import ParisTimer
+from .timer import Timer
 
 
 class Transmitter(ABC):
@@ -27,7 +27,7 @@ class Transmitter(ABC):
 class DebugTransmitter(Transmitter):
     """A debug transmitter."""
 
-    def __init__(self, timer: ParisTimer):
+    def __init__(self, timer: Timer):
         self.timer = timer
 
     def __del__(self):
@@ -57,10 +57,9 @@ class DebugTransmitter(Transmitter):
 class RpiTransmitter(Transmitter):
     """A Raspberry Pi transmitter."""
 
-    def __init__(self, timer: ParisTimer):
+    def __init__(self, timer: Timer):
         # import gpio here to avoid import errors on non-rpi platforms
-        # pylint: disable=import-outside-toplevel
-        from RPi import GPIO
+        from RPi import GPIO # pylint: disable=import-outside-toplevel
         self.gpio = GPIO
         self.timer = timer
         self.gpio.setmode(self.gpio.BCM)
