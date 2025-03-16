@@ -62,8 +62,8 @@ class RpiTransmitter(Transmitter):
         try:
             from RPi import GPIO # pylint: disable=import-outside-toplevel
             self.gpio = GPIO
-        except ImportError:
-            raise ImportError("RPi.GPIO module not found. This transmitter only works on Raspberry Pi.")
+        except ImportError as ex:
+            raise ImportError("RPi.GPIO module not found. This transmitter only works on Raspberry Pi.") from ex
         self.timer = timer
         self.gpio.setmode(self.gpio.BCM)
         self.gpio.setup(4, self.gpio.OUT)

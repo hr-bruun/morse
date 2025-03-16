@@ -6,6 +6,9 @@ authors = ["Morten Bruun"]
 license = "MIT"
 readme = "README.md"
 
+[tool.pylint.format]
+max-line-length = 120
+
 [tool.poetry.dependencies]
 python = "^3.10"
 
