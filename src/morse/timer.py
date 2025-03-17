@@ -48,7 +48,7 @@ class ParisTimer(Timer):
 
     def _pause(self, units: int) -> None:
         """Pause for a given number of units."""
-        time.sleep(units * self.dit_length)
+        time.sleep(units * self.dit_length())
 
     def dit_length(self) -> float:
         """Calculate the length of a dit based on words per minute."""
