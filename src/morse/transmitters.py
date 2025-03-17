@@ -57,6 +57,8 @@ class DebugTransmitter(Transmitter):
 class RpiTransmitter(Transmitter):
     """A Raspberry Pi transmitter."""
 
+    GPIO_PIN = 4
+
     def __init__(self, timer: Timer):
         # import gpio here to avoid import errors on non-rpi platforms
         try:
@@ -66,19 +68,18 @@ class RpiTransmitter(Transmitter):
             raise ImportError("RPi.GPIO module not found. This transmitter only works on Raspberry Pi.") from ex
         self.timer = timer
         self.gpio.setmode(self.gpio.BCM)
-        self.gpio.setup(4, self.gpio.OUT)
-        self.gpio.output(4, self.gpio.LOW)
+        self.gpio.setup(self.GPIO_PIN, self.gpio.OUT)
+        self.gpio.output(self.GPIO_PIN, self.gpio.LOW)
 
     def __del__(self):
-        self.gpio.output(4, self.gpio.LOW)
-        self.gpio.cleanup()
+        self.gpio.output(self.GPIO_PIN, self.gpio.LOW)
         self.gpio.cleanup()
 
     def transmit(self, dot_or_dash: int) -> None:
-        self.gpio.output(4, self.gpio.HIGH)
+        self.gpio.output(self.GPIO_PIN, self.gpio.HIGH)
         self.timer.dot_or_dash(dot_or_dash)
-        self.gpio.output(4, self.gpio.LOW)
-        self.gpio.output(4, self.gpio.LOW)
+        self.gpio.output(self.GPIO_PIN, self.gpio.LOW)
+        self.timer.end_of_dot_or_dash()
 
     def end_of_character(self) -> None:
         """Handle end of character."""
